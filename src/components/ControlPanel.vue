@@ -7,27 +7,28 @@ import usePlanets from '../composables/usePlanets';
 const {
   sortOptionsWithLabels,
   selectedSortOption,
-  getPlanetsBySearch,
   search,
   isLoading,
-  getPlanetsByPage,
   fetchedPages,
-  planets
+  planets,
+  currentPage,
+  getPlanetsBySearch,
+  getPlanetsByPage
 } = usePlanets();
 
 const isDropdownOpen = ref(false);
 
-const handleReload = async (): Promise<void> => {
+const handleClear = async (): Promise<void> => {
   planets.value = [];
   selectedSortOption.value = null;
   search.value = null;
-  getPlanetsByPage(1);
+  currentPage.value = 1
+  await getPlanetsByPage(currentPage.value);
 };
 
 const handleSearch = async (): Promise<void> => {
   planets.value = [];
   fetchedPages.value.clear();
-
   search.value && (await getPlanetsBySearch(search.value));
 };
 </script>
@@ -52,7 +53,7 @@ const handleSearch = async (): Promise<void> => {
       </button>
       <button
         class="control-panel__btn h-lg px-sm ml-sm border border-primary-stroke"
-        @click="handleReload"
+        @click="handleClear"
         :class="{ disabled: isLoading }"
       >
         <p class="text-secondary-text">Clear</p>
