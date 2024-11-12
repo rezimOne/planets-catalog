@@ -6,11 +6,7 @@ import Panel from 'primevue/panel';
 import PlanetCard from './PlanetCard.vue';
 import Pagination from './Pagination.vue';
 
-const {
-  planetsByRowsPerPage: planets,
-  generatePlanetIdByUrl,
-  capitalizeFirstLetter
-} = usePlanets();
+const { planetsToDisplay: planets, generatePlanetIdByUrl, capitalizeFirstLetter } = usePlanets();
 
 const selectedPlanets = ref<Set<string>>(new Set());
 

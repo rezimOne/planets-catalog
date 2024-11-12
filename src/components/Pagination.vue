@@ -1,9 +1,18 @@
 <script lang="ts" setup>
 import Paginator from 'primevue/paginator';
 import usePlanets from '../composables/usePlanets';
+import { watch } from 'vue';
 
-const { count, currentPage, rowsPerPage, isLoading, firstItemIndexByPage, ROWS_PER_PAGE_OPTIONS } =
-  usePlanets();
+const {
+  getPlanetsByPage,
+  count,
+  currentPage,
+  rowsPerPage,
+  fetchedPages,
+  isLoading,
+  firstItemIndexByPage,
+  ROWS_PER_PAGE_OPTIONS
+} = usePlanets();
 
 const handlePageChange = (e: { page: number; rows: number }): void => {
   rowsPerPage.value !== e.rows
@@ -12,6 +21,20 @@ const handlePageChange = (e: { page: number; rows: number }): void => {
 
   rowsPerPage.value = e.rows;
 };
+
+watch(
+  () => [firstItemIndexByPage.value, rowsPerPage.value],
+  async ([index, rows]) => {
+    const totalPagesToFetch = Math.ceil(rows / 10);
+    const startingPage = Math.floor(index / 10) + 1;
+
+    for (let page = startingPage; page < startingPage + totalPagesToFetch; page++) {
+      if (!fetchedPages.value.has(page)) {
+        await getPlanetsByPage(page);
+      }
+    }
+  }
+);
 </script>
 
 <template>

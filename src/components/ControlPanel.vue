@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch, computed } from 'vue';
 import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import usePlanets from '../composables/usePlanets';
@@ -10,7 +10,13 @@ const {
   getAllPlanets,
   getPlanetsBySearch,
   search,
-  isLoading
+  isLoading,
+  currentPage,
+  rowsPerPage,
+  firstItemIndexByPage,
+  resultsPerPage,
+  getPlanetsByPage,
+  fetchedPages
 } = usePlanets();
 
 const isDropdownOpen = ref(false);
