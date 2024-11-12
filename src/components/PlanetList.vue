@@ -6,7 +6,7 @@ import Panel from 'primevue/panel';
 import PlanetCard from './PlanetCard.vue';
 import Pagination from './Pagination.vue';
 
-const { planetsByRowsPerPage: planets, generatePlanetIdByUrl } = usePlanets();
+const { planetsByRowsPerPage: planets, generatePlanetIdByUrl, capitalizeFirstLetter } = usePlanets();
 
 const selectedPlanets = ref<Set<string>>(new Set());
 
@@ -23,7 +23,7 @@ const isPlanetSelected = (planet: Planet): boolean =>
 </script>
 
 <template>
-  <ul class="planet-list flex flex-col gap-sm py-sm overflow-y-auto px-xs">
+  <ul class="planet-list flex flex-col gap-sm overflow-y-auto p-xs">
     <li
       class="planet-list__item"
       v-for="(planet, idx) in planets"
@@ -46,7 +46,7 @@ const isPlanetSelected = (planet: Planet): boolean =>
           <button
             class="planet-list__item__header flex items-center justify-between h-12 w-full relative"
           >
-            <h2 class="text-xl px-sm">{{ planet.name }}</h2>
+            <h2 class="text-xl px-sm">{{ capitalizeFirstLetter(planet.name) }}</h2>
             <div class="flex items-center justify-center w-12 h-full">
               <fa
                 class="lanet-list__item__header-icon h-4"

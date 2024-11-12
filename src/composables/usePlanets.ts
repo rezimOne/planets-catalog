@@ -146,6 +146,7 @@ export default function usePlanets() {
     getAllPlanets,
     getPlanetsBySearch,
     formatDate,
+    capitalizeFirstLetter,
     sortOptionsWithLabels,
     firstItemIndexByPage,
     selectedSortOption,
