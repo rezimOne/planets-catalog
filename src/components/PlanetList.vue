@@ -23,7 +23,7 @@ const isPlanetSelected = (planet: Planet): boolean =>
 </script>
 
 <template>
-  <ul class="planet-list flex flex-col gap-sm py-sm overflow-y-auto">
+  <ul class="planet-list flex flex-col gap-sm py-sm overflow-y-auto px-xs">
     <li
       class="planet-list__item"
       v-for="(planet, idx) in planets"

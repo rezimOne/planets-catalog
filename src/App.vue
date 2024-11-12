@@ -4,7 +4,7 @@ import usePlanets from './composables/usePlanets';
 import PlanetList from './components/PlanetList.vue';
 import ControlPanel from './components/ControlPanel.vue';
 
-const { getAllPlanets, isLoading } = usePlanets();
+const { getAllPlanets, isLoading, planets } = usePlanets();
 
 onBeforeMount(async (): Promise<void> => {
   await getAllPlanets();
@@ -19,6 +19,9 @@ onBeforeMount(async (): Promise<void> => {
     <div v-if="isLoading" class="flex items-center justify-center h-full">
       <span class="text-lg text-secondary-text">Loading...</span>
     </div>
-    <PlanetList v-else />
+    <PlanetList v-else-if="planets.length > 0" />
+    <span v-else class="flex items-center justify-center h-full text-lg text-secondary-text"
+      >No planets found. Please try again!</span
+    >
   </div>
 </template>
