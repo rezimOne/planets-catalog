@@ -32,7 +32,9 @@ export default function usePlanets() {
   const getPlanetsByPage = async (page: number): Promise<void> => {
     try {
       isLoading.value = true;
+
       const response = await fetch(`${BASE_URL}/planets/?page=${page}`);
+
       fetchedPages.value.add(page);
 
       if (!response.ok) {
@@ -54,6 +56,8 @@ export default function usePlanets() {
       isLoading.value = true;
 
       const response = await fetch(`${BASE_URL}/planets/?search=${searchParam}&page=${page}`);
+
+      fetchedPages.value.add(page);
 
       if (!response.ok) {
         throw new Error(`Fetching planets failed! ${response.status}`);

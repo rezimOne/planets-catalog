@@ -22,13 +22,14 @@ const handleClear = async (): Promise<void> => {
   planets.value = [];
   selectedSortOption.value = null;
   search.value = null;
-  currentPage.value = 1
+  currentPage.value = 1;
   await getPlanetsByPage(currentPage.value);
 };
 
 const handleSearch = async (): Promise<void> => {
   planets.value = [];
   fetchedPages.value.clear();
+  currentPage.value = 1;
   search.value && (await getPlanetsBySearch(search.value));
 };
 </script>
