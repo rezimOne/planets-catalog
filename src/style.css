@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition: ease-in-out 0.4s all;
+
+  /* spacing variables*/
+  --spacing-xs: 6px;
+  --spacing: 12px;
+  --spacing-md: 24px;
+  --spacing-lg: 36px;
+  --spacing-xl: 48px;
+
+  --btn-sm-height: 32px;
+  --btn-sm-width: 32px;
+
+  --btn-md-height: 48px;
+  --btn-md-width: 48px;
+
+  --btn-lg-height: 60px;
+  --btn-lg-width: 60px;
+
+  /*theme color variables*/
+  --main-bg: #222b3f;
+  --primary-card-bg: #222b3f;
+  --secondary-card-bg: #222b3f;
+  --primary-card-stroke: #3f3a22;
+  --secondary-card-stroke: #222b3f;
+
+  --btn-primary-bg: #be185d;
+  --btn-primary-stroke: #be185d;
+  --btn-secondary-bg: #4b5563;
+  --btn-secondary-stroke: #4b5563;
+
+  --primary-bg: #be185d;
+  --secondary-bg: #4b5563;
+  --alternative-bg: #1c2331;
+
+  --primary-stroke: #be185d;
+  --secondary-stroke: #4b5563;
+
+  --primary-hover: #374157;
+  --secondary-hover: #c4d8f542;
+
+  --primary-text: #dfdfdf;
+  --secondary-text: #be185d;
+  --placeholder-text: #626f80;
+
+  --scroll-bg: #9b9b9b80;
+}
