@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref } from 'vue';
 import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import usePlanets from '../composables/usePlanets';
@@ -7,28 +7,27 @@ import usePlanets from '../composables/usePlanets';
 const {
   sortOptionsWithLabels,
   selectedSortOption,
-  getAllPlanets,
   getPlanetsBySearch,
   search,
   isLoading,
-  currentPage,
-  rowsPerPage,
-  firstItemIndexByPage,
-  resultsPerPage,
   getPlanetsByPage,
   fetchedPages,
-  pageCount
+  planets
 } = usePlanets();
 
 const isDropdownOpen = ref(false);
 
 const handleReload = async (): Promise<void> => {
+  planets.value = [];
   selectedSortOption.value = null;
   search.value = null;
-  getAllPlanets();
+  getPlanetsByPage(1);
 };
 
 const handleSearch = async (): Promise<void> => {
+  planets.value = [];
+  fetchedPages.value.clear();
+
   search.value && (await getPlanetsBySearch(search.value));
 };
 </script>

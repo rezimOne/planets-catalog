@@ -5,10 +5,10 @@ import { watch } from 'vue';
 
 const {
   getPlanetsByPage,
+  getPlanetsBySearch,
   currentPage,
   rowsPerPage,
   fetchedPages,
-  isLoading,
   firstItemIndexByPage,
   ROWS_PER_PAGE_OPTIONS,
   search,
@@ -24,14 +24,14 @@ const handlePageChange = (e: { page: number; rows: number }): void => {
 };
 
 watch(
-  () => [firstItemIndexByPage.value, rowsPerPage.value],
-  async ([index, rows]) => {
+  (): [number, number] => [firstItemIndexByPage.value, rowsPerPage.value],
+  async ([index, rows]): Promise<void> => {
     const totalPagesToFetch = Math.ceil(rows / 10);
     const startingPage = Math.floor(index / 10) + 1;
 
     for (let page = startingPage; page < startingPage + totalPagesToFetch; page++) {
       if (!fetchedPages.value.has(page)) {
-        await getPlanetsByPage(page);
+        search.value ? getPlanetsBySearch(search.value, page) : await getPlanetsByPage(page);
       }
     }
   }

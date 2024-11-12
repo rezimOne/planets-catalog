@@ -52,9 +52,7 @@ export default function usePlanets() {
   const getPlanetsBySearch = async (searchParam: string, page: number = 1): Promise<void> => {
     try {
       isLoading.value = true;
-      currentPage.value = 1;
 
-      let searchResult: Planet[] = [];
       const response = await fetch(`${BASE_URL}/planets/?search=${searchParam}&page=${page}`);
 
       if (!response.ok) {
@@ -62,10 +60,8 @@ export default function usePlanets() {
       }
 
       const data: ResponseData = await response.json();
-      searchResult = data.results;
-
-      state.planets = searchResult;
-      state.pageCount = data.count;
+      state.planets.push(...data.results);
+      state.pageCount = data.next ? state.planets.length + 1 : state.planets.length;
     } catch (error) {
       console.error(error);
     } finally {

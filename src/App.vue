@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { onBeforeMount, watch } from 'vue';
+import { onBeforeMount } from 'vue';
 import usePlanets from './composables/usePlanets';
 import PlanetList from './components/PlanetList.vue';
 import ControlPanel from './components/ControlPanel.vue';
 
-const { isLoading, planets, fetchedPages, getPlanetsByPage, currentPage } = usePlanets();
+const { isLoading, planets, fetchedPages, getPlanetsByPage } = usePlanets();
 
 onBeforeMount(async (): Promise<void> => {
   fetchedPages.value.clear();
-  await getPlanetsByPage(currentPage.value);
+  await getPlanetsByPage(1);
 });
 </script>
 
