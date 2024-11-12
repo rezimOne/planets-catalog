@@ -2,7 +2,7 @@
 import Paginator from 'primevue/paginator';
 import usePlanets from '../composables/usePlanets';
 
-const { count, currentPage, rowsPerPage, firstItemIndexByPage, ROWS_PER_PAGE_OPTIONS } =
+const { count, currentPage, rowsPerPage, isLoading, firstItemIndexByPage, ROWS_PER_PAGE_OPTIONS } =
   usePlanets();
 
 const handlePageChange = (e: { page: number; rows: number }): void => {

@@ -4,8 +4,14 @@ import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import usePlanets from '../composables/usePlanets';
 
-const { sortOptionsWithLabels, selectedSortOption, getAllPlanets, getPlanetsBySearch, search } =
-  usePlanets();
+const {
+  sortOptionsWithLabels,
+  selectedSortOption,
+  getAllPlanets,
+  getPlanetsBySearch,
+  search,
+  isLoading
+} = usePlanets();
 
 const isDropdownOpen = ref(false);
 
@@ -29,16 +35,19 @@ const handleSearch = async (): Promise<void> => {
         placeholder="Search by planet name"
         class="control-panel__input h-lg p-xs w-full border-y border-l border-primary-stroke bg-alternative-bg text-primary-text"
         v-model="search"
+        :class="{ disabled: isLoading }"
       />
       <button
         class="control-panel__btn h-lg w-lg border border-primary-stroke"
         @click="handleSearch"
+        :class="{ disabled: isLoading }"
       >
         <fa class="icon h-4" icon="search" />
       </button>
       <button
         class="control-panel__btn h-lg px-sm ml-sm border border-primary-stroke"
         @click="handleReload"
+        :class="{ disabled: isLoading }"
       >
         <p class="text-secondary-text">Clear</p>
       </button>
@@ -49,6 +58,7 @@ const handleSearch = async (): Promise<void> => {
       optionLabel="label"
       placeholder="Sort by"
       showClear
+      :class="{ disabled: isLoading }"
       @show="() => (isDropdownOpen = true)"
       @hide="() => (isDropdownOpen = false)"
       class="control-panel__sort m-sm border border-primary-stroke flex items-center bg-alternative-bg"
@@ -72,7 +82,7 @@ const handleSearch = async (): Promise<void> => {
         />
       </template>
       <template #dropdownicon>
-        <button class="control-panel__btn h-lg w-lg">
+        <button :disabled="isLoading" class="control-panel__btn h-lg w-lg">
           <fa class="icon h-4" :icon="isDropdownOpen ? 'chevron-up' : 'chevron-down'" />
         </button>
       </template>
@@ -113,5 +123,10 @@ const handleSearch = async (): Promise<void> => {
   ::-moz-placeholder {
     color: var(--placeholder-text);
   }
+}
+
+.disabled {
+  opacity: 0.7;
+  pointer-events: none;
 }
 </style>

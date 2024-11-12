@@ -24,7 +24,6 @@ const rowsPerPage = ref(10);
 const firstItemIndexByPage = ref(0);
 const selectedSortOption = ref<SortOption | null>(null);
 const search = ref<string | null>(null);
-const searchResult = ref<Planet[] | null>(null);
 const isLoading = ref(false);
 
 export default function usePlanets() {
@@ -82,6 +81,9 @@ export default function usePlanets() {
   const getPlanetsBySearch = async (searchParam: string): Promise<void> => {
     try {
       isLoading.value = true;
+      currentPage.value = 1;
+
+      let searchResult: Planet[] = [];
       const response = await fetch(`${BASE_URL}/planets/?search=${searchParam}`);
 
       if (!response.ok) {
@@ -89,9 +91,9 @@ export default function usePlanets() {
       }
 
       const data: ResponseData = await response.json();
-      searchResult.value = data.results;
+      searchResult = data.results;
 
-      state.planets = [...searchResult.value];
+      state.planets = [...searchResult];
     } catch (error) {
       console.error(error);
     } finally {
