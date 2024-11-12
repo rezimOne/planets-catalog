@@ -13,7 +13,7 @@ onBeforeMount(async (): Promise<void> => {
 
 <template>
   <div
-    class="container relative h-screen py-sm border border-primary-stroke bg-alternative-bg flex flex-col"
+    class="container relative h-svh py-sm border border-primary-stroke bg-alternative-bg flex flex-col"
   >
     <ControlPanel />
     <div v-if="isLoading" class="flex items-center justify-center h-full">
