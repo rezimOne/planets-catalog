@@ -16,7 +16,8 @@ const {
   firstItemIndexByPage,
   resultsPerPage,
   getPlanetsByPage,
-  fetchedPages
+  fetchedPages,
+  pageCount
 } = usePlanets();
 
 const isDropdownOpen = ref(false);

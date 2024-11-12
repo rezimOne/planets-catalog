@@ -5,13 +5,14 @@ import { watch } from 'vue';
 
 const {
   getPlanetsByPage,
-  count,
   currentPage,
   rowsPerPage,
   fetchedPages,
   isLoading,
   firstItemIndexByPage,
-  ROWS_PER_PAGE_OPTIONS
+  ROWS_PER_PAGE_OPTIONS,
+  search,
+  pageCount
 } = usePlanets();
 
 const handlePageChange = (e: { page: number; rows: number }): void => {
@@ -42,7 +43,7 @@ watch(
     v-model:first="firstItemIndexByPage"
     :rows="rowsPerPage"
     :rowsPerPageOptions="ROWS_PER_PAGE_OPTIONS"
-    :totalRecords="count"
+    :totalRecords="pageCount"
     @page="handlePageChange"
     :pt="{
       content: {

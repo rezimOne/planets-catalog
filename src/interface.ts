@@ -24,7 +24,7 @@ export interface Planet {
 }
 
 export interface Planets {
-  count: number;
+  pageCount: number;
   planets: Planet[];
 }
 

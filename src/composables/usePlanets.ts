@@ -15,7 +15,7 @@ const SORT_OPTIONS: SortOption[] = [
 ];
 
 const state = reactive<Planets>({
-  count: 0,
+  pageCount: 0,
   planets: []
 });
 
@@ -40,8 +40,8 @@ export default function usePlanets() {
       }
 
       const data = await response.json();
-      state.count = data.count;
       state.planets.push(...data.results);
+      state.pageCount = data.next ? state.planets.length + 1 : state.planets.length;
     } catch (error) {
       console.error();
     } finally {
@@ -49,13 +49,13 @@ export default function usePlanets() {
     }
   };
 
-  const getPlanetsBySearch = async (searchParam: string): Promise<void> => {
+  const getPlanetsBySearch = async (searchParam: string, page: number = 1): Promise<void> => {
     try {
       isLoading.value = true;
       currentPage.value = 1;
 
       let searchResult: Planet[] = [];
-      const response = await fetch(`${BASE_URL}/planets/?search=${searchParam}`);
+      const response = await fetch(`${BASE_URL}/planets/?search=${searchParam}&page=${page}`);
 
       if (!response.ok) {
         throw new Error(`Fetching planets failed! ${response.status}`);
@@ -64,7 +64,8 @@ export default function usePlanets() {
       const data: ResponseData = await response.json();
       searchResult = data.results;
 
-      state.planets = [...searchResult];
+      state.planets = searchResult;
+      state.pageCount = data.count;
     } catch (error) {
       console.error(error);
     } finally {
