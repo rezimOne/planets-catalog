@@ -43,6 +43,11 @@ export default function usePlanets() {
 
       const data = await response.json();
       state.planets.push(...data.results);
+
+      if (selectedSortOption.value) {
+        state.planets = sortPlanets(state.planets, selectedSortOption.value);
+      }
+
       state.pageCount = data.next ? state.planets.length + 1 : state.planets.length;
     } catch (error) {
       console.error();
@@ -65,6 +70,11 @@ export default function usePlanets() {
 
       const data: ResponseData = await response.json();
       state.planets.push(...data.results);
+
+      if (selectedSortOption.value) {
+        state.planets = sortPlanets(state.planets, selectedSortOption.value);
+      }
+
       state.pageCount = data.next ? state.planets.length + 1 : state.planets.length;
     } catch (error) {
       console.error(error);
@@ -119,13 +129,7 @@ export default function usePlanets() {
     const startIndex = (currentPage.value - 1) * rowsPerPage.value;
     const endIndex = startIndex + rowsPerPage.value;
 
-    let planetsToDisplay = state.planets.slice(startIndex, endIndex).flat();
-
-    if (selectedSortOption.value) {
-      planetsToDisplay = sortPlanets(planetsToDisplay, selectedSortOption.value);
-    }
-
-    return planetsToDisplay;
+    return state.planets.slice(startIndex, endIndex).flat();
   });
 
   const sortOptionsWithLabels = computed(() => {

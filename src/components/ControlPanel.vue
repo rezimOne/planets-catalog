@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import usePlanets from '../composables/usePlanets';
+import { SortOption } from '../interface';
 
 const {
   sortOptionsWithLabels,
@@ -13,7 +14,8 @@ const {
   planets,
   currentPage,
   getPlanetsBySearch,
-  getPlanetsByPage
+  getPlanetsByPage,
+  sortPlanets
 } = usePlanets();
 
 const isDropdownOpen = ref(false);
@@ -32,6 +34,15 @@ const handleSearch = async (): Promise<void> => {
   currentPage.value = 1;
   search.value && (await getPlanetsBySearch(search.value));
 };
+
+watch(
+  (): SortOption | null => selectedSortOption.value,
+  (option): void => {
+    if (option && planets.value.length > 0) {
+      planets.value = sortPlanets(planets.value, option);
+    }
+  }
+);
 </script>
 
 <template>
