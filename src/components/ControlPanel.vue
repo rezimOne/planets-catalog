@@ -3,10 +3,10 @@ import { ref, watch } from 'vue';
 import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import usePlanets from '../composables/usePlanets';
-import { SortOption } from '../interface';
+import type { SortOption } from '../interface';
+import { sortOptionsWithLabels, sortPlanets } from '../utils/helpers';
 
 const {
-  sortOptionsWithLabels,
   selectedSortOption,
   search,
   isLoading,
@@ -15,7 +15,7 @@ const {
   currentPage,
   getPlanetsBySearch,
   getPlanetsByPage,
-  sortPlanets
+  getAllPlanets
 } = usePlanets();
 
 const isDropdownOpen = ref(false);
@@ -37,9 +37,13 @@ const handleSearch = async (): Promise<void> => {
 
 watch(
   (): SortOption | null => selectedSortOption.value,
-  (option): void => {
-    if (option && planets.value.length > 0) {
-      planets.value = sortPlanets(planets.value, option);
+  async (option): Promise<void> => {
+    if (option) {
+      if(search.value) {
+        await getAllPlanets();
+      } else {
+        planets.value = sortPlanets(planets.value, option);
+      }
     }
   }
 );

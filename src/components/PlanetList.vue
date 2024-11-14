@@ -5,8 +5,9 @@ import { type Planet } from '../interface';
 import Panel from 'primevue/panel';
 import PlanetCard from './PlanetCard.vue';
 import Pagination from './Pagination.vue';
+import { capitalizeFirstLetter, generatePlanetIdByUrl } from '../utils/helpers';
 
-const { planetsToDisplay: planets, generatePlanetIdByUrl, capitalizeFirstLetter } = usePlanets();
+const { planetsToDisplay: planets } = usePlanets();
 
 const selectedPlanets = ref<Set<string>>(new Set());
 

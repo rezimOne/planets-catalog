@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { type Planet } from '../interface';
+import type { Planet } from '../interface';
 import Card from 'primevue/card';
-import usePlanets from '../composables/usePlanets';
-
-const { formatDate } = usePlanets();
+import { formatDate } from '../utils/helpers';
 
 defineProps<{
   planet: Planet;
