@@ -1,32 +1,20 @@
 import { computed, reactive, ref, toRefs } from 'vue';
-import { ResponseData, type Planet, type Planets, type SortOption } from '../interface';
-
-const BASE_URL = 'https://swapi.dev/api';
-
-const ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 30];
-
-const SORT_OPTIONS: SortOption[] = [
-  { field: 'name', order: 'asc' },
-  { field: 'name', order: 'desc' },
-  { field: 'diameter', order: 'asc' },
-  { field: 'diameter', order: 'desc' },
-  { field: 'population', order: 'asc' },
-  { field: 'population', order: 'desc' }
-];
+import type { ResponseData, Planet, SortOption, Planets } from '../interface';
+import { ROWS_PER_PAGE, BASE_URL, sortPlanets } from '../utils/helpers';
 
 const state = reactive<Planets>({
-  pageCount: 0,
-  planets: []
+  planets: [],
+  count: 0
 });
 
-const resultsPerPage = ref<Planet[]>([]);
 const fetchedPages = ref(new Set<number>());
 const currentPage = ref(1);
 const rowsPerPage = ref(10);
-const firstItemIndexByPage = ref(0);
 const selectedSortOption = ref<SortOption | null>(null);
 const search = ref<string | null>(null);
 const isLoading = ref(false);
+const firstItemIndexByPage = ref(0);
+const sortedPlanets = ref<Planet[]>([]);
 
 export default function usePlanets() {
   const getPlanetsByPage = async (page: number): Promise<void> => {
@@ -34,21 +22,15 @@ export default function usePlanets() {
       isLoading.value = true;
 
       const response = await fetch(`${BASE_URL}/planets/?page=${page}`);
-
-      fetchedPages.value.add(page);
-
       if (!response.ok) {
         throw new Error(`Fetching planets failed! ${response.status}`);
       }
 
-      const data = await response.json();
+      fetchedPages.value.add(page);
+
+      const data: ResponseData = await response.json();
       state.planets.push(...data.results);
-
-      if (selectedSortOption.value) {
-        state.planets = sortPlanets(state.planets, selectedSortOption.value);
-      }
-
-      state.pageCount = data.next ? state.planets.length + 1 : state.planets.length;
+      state.count = data.count;
     } catch (error) {
       console.error();
     } finally {
@@ -61,21 +43,15 @@ export default function usePlanets() {
       isLoading.value = true;
 
       const response = await fetch(`${BASE_URL}/planets/?search=${searchParam}&page=${page}`);
-
-      fetchedPages.value.add(page);
-
       if (!response.ok) {
         throw new Error(`Fetching planets failed! ${response.status}`);
       }
 
+      fetchedPages.value.add(page);
+
       const data: ResponseData = await response.json();
       state.planets.push(...data.results);
-
-      if (selectedSortOption.value) {
-        state.planets = sortPlanets(state.planets, selectedSortOption.value);
-      }
-
-      state.pageCount = data.next ? state.planets.length + 1 : state.planets.length;
+      state.count = data.count;
     } catch (error) {
       console.error(error);
     } finally {
@@ -83,80 +59,63 @@ export default function usePlanets() {
     }
   };
 
-  const sortPlanets = (planets: Planet[], sortOption: SortOption): Planet[] => {
-    return planets.sort((a, b) => {
-      const valueA = a[sortOption.field];
-      const valueB = b[sortOption.field];
+  const getAllPlanets = async (): Promise<void> => {
+    try {
+      isLoading.value = true;
+      let allPlanets: Planet[] = [];
+      let nextPageUrl: string | null = `${BASE_URL}/planets/?page=1`;
 
-      if (valueA === 'unknown') return 1;
-      if (valueB === 'unknown') return -1;
+      while (nextPageUrl) {
+        const response = await fetch(nextPageUrl);
 
-      const numericA = Number(valueA);
-      const numericB = Number(valueB);
-      if (!isNaN(numericA) && !isNaN(numericB)) {
-        return sortOption.order === 'asc' ? numericA - numericB : numericB - numericA;
+        if (!response.ok) {
+          throw new Error(`Fetching planets failed! ${response.status}`);
+        }
+
+        const data: ResponseData = await response.json();
+        allPlanets = [...allPlanets, ...data.results];
+        nextPageUrl = data.next;
       }
-
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        return sortOption.order === 'asc'
-          ? valueA.localeCompare(valueB)
-          : valueB.localeCompare(valueA);
-      }
-
-      return 0;
-    });
-  };
-
-  const capitalizeFirstLetter = (str: string): string => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  const generatePlanetIdByUrl = (url: string): string => {
-    const urlParts = url.split('/');
-    const id = `${urlParts[urlParts.length - 3]}_${urlParts[urlParts.length - 2]}`;
-    return id;
-  };
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+      state.planets = allPlanets;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      isLoading.value = false;
+    }
   };
 
   const planetsToDisplay = computed<Planet[]>(() => {
-    const startIndex = (currentPage.value - 1) * rowsPerPage.value;
-    const endIndex = startIndex + rowsPerPage.value;
+    let planets = selectedSortOption.value
+      ? sortPlanets([...state.planets], selectedSortOption.value)
+      : [...state.planets];
 
-    return state.planets.slice(startIndex, endIndex).flat();
+    const startIndex = (currentPage.value - 1) * ROWS_PER_PAGE;
+    const endIndex = startIndex + ROWS_PER_PAGE;
+
+    return planets.slice(startIndex, endIndex);
   });
 
-  const sortOptionsWithLabels = computed(() => {
-    return SORT_OPTIONS.map((option) => ({
-      ...option,
-      label: `${capitalizeFirstLetter(option.field)} ${option.order === 'asc' ? 'ascending' : 'descending'}`
-    }));
-  });
+  const handlePageChange = (e: { page: number; rows: number }): void => {
+    currentPage.value = e.page + 1;
+    rowsPerPage.value = e.rows;
+    firstItemIndexByPage.value = e.page * e.rows;
+  };
 
   return {
-    generatePlanetIdByUrl,
     sortPlanets,
     getPlanetsBySearch,
     getPlanetsByPage,
-    formatDate,
-    capitalizeFirstLetter,
-    sortOptionsWithLabels,
-    firstItemIndexByPage,
+    getAllPlanets,
+    handlePageChange,
     selectedSortOption,
-    ROWS_PER_PAGE_OPTIONS,
     planetsToDisplay,
     currentPage,
     rowsPerPage,
     search,
     isLoading,
-    resultsPerPage,
     fetchedPages,
+    firstItemIndexByPage,
+    sortedPlanets,
     ...toRefs(state)
   };
 }

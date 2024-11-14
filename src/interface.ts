@@ -24,8 +24,8 @@ export interface Planet {
 }
 
 export interface Planets {
-  pageCount: number;
   planets: Planet[];
+  count: number;
 }
 
 type SortOrder = 'asc' | 'desc';
