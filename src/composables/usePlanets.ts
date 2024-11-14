@@ -113,7 +113,7 @@ export default function usePlanets() {
     search,
     isLoading,
     fetchedPages,
-    firstItemIndexByPage
+    firstItemIndexByPage,
     ...toRefs(state)
   };
 }
