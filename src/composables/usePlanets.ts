@@ -14,7 +14,6 @@ const selectedSortOption = ref<SortOption | null>(null);
 const search = ref<string | null>(null);
 const isLoading = ref(false);
 const firstItemIndexByPage = ref(0);
-const sortedPlanets = ref<Planet[]>([]);
 
 export default function usePlanets() {
   const getPlanetsByPage = async (page: number): Promise<void> => {
@@ -115,7 +114,6 @@ export default function usePlanets() {
     isLoading,
     fetchedPages,
     firstItemIndexByPage,
-    sortedPlanets,
     ...toRefs(state)
   };
 }

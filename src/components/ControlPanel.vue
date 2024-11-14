@@ -39,7 +39,7 @@ watch(
   (): SortOption | null => selectedSortOption.value,
   async (option): Promise<void> => {
     if (option) {
-      if(search.value) {
+      if (!search.value) {
         await getAllPlanets();
       } else {
         planets.value = sortPlanets(planets.value, option);
